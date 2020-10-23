@@ -4,6 +4,7 @@ const { api } = require("../config");
 
 const app = express();
 
+app.use(express.json());
 // Rutas
 
 app.use("/api/user", user);
