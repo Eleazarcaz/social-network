@@ -1,5 +1,5 @@
 const db = {
-  user: [{ id: "1", name: "Eleazar" }],
+  user: [{ id: '1', name: 'Eleazar' }],
 };
 
 async function list(table) {
@@ -8,7 +8,7 @@ async function list(table) {
 
 async function get(table, id) {
   let col = await list(table);
-  const data = col.filter((item) => item.id === id)[0] || null;
+  const data = col.find((item) => item.id === id) || null;
 
   if (!data) {
     throw `'${id}' not found`;
@@ -18,10 +18,14 @@ async function get(table, id) {
 }
 
 async function upsert(table, data) {
-  const newData = { id: new Date().getTime().toString(), ...data };
+  if (!db[table]) {
+    db[table] = [];
+  }
 
-  db[table].push(newData);
-  return get(table, newData.id);
+  await db[table].push(data);
+  const { id } = await get(table, data.id);
+
+  return id;
 }
 
 async function update(table, id, data) {
@@ -47,7 +51,7 @@ async function remove(table, id) {
 
   db[table].splice(index, 1);
 
-  return "removed";
+  return 'removed';
 }
 
 module.exports = {

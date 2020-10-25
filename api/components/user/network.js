@@ -1,10 +1,10 @@
-const express = require("express");
-const response = require("../../../network/response");
-const Controller = require("./index");
+const express = require('express');
+const response = require('../../../network/response');
+const Controller = require('./index');
 
 const router = express.Router();
-function (a,b){return b;}
-router.get("/", (req, res) => {
+
+router.get('/', (req, res) => {
   Controller.list()
     .then((lista) => {
       response.success(req, res, lista, 200);
@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get('/:id', (req, res) => {
   Controller.get(req.params.id)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -24,7 +24,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post('/', (req, res) => {
   Controller.add(req.body)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put('/:id', (req, res) => {
   Controller.update(req.params.id, req.body)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -44,7 +44,7 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete('/:id', (req, res) => {
   Controller.remove(req.params.id)
     .then((message) => {
       response.success(req, res, message, 200);

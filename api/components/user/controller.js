@@ -1,7 +1,10 @@
-const TABLE = "user";
+const { nanoid } = require('nanoid');
+const auth = require('../auth/index');
 
-module.exports = function (includeStore) {
-  const store = includeStore || require("../../../store/dummy");
+const TABLE = 'user';
+
+module.exports = function(includeStore) {
+  const store = includeStore || require('../../../store/dummy');
 
   function list() {
     return store.list(TABLE);
@@ -11,8 +14,19 @@ module.exports = function (includeStore) {
     return store.get(TABLE, id);
   }
 
-  function add(data) {
-    return store.upsert(TABLE, data);
+  async function add({ id, username, password, name }) {
+    const user = {
+      id: id || nanoid(),
+      username: username || null,
+      password: password || null,
+      name,
+    };
+
+    if (password || username) {
+      await auth.upsert(user);
+    }
+
+    return store.upsert(TABLE, user);
   }
 
   function remove(id) {
