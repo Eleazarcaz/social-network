@@ -12,3 +12,4 @@ app.use('/api/user', user);
 app.use('/api/login', auth);
 
 app.listen(api.port, () => console.log('Servidor en el puerto', api.port));
+

@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const auth = require('../../../auth/index');
 
 const TABLE = 'auth';
@@ -7,17 +8,18 @@ module.exports = function(includeStore) {
 
   async function login({ username, password }) {
     const data = await store.query(TABLE, { username });
-    if (data.password === password) {
-      debugger;
-      console.log('en el if');
-      return auth.sign(data);
-    } else {
-      throw new Error('Invalid info');
-    }
+
+    return bcrypt.compare(password, data.password).then((isSame) => {
+      if (isSame) {
+        return auth.sign(data);
+      } else {
+        throw new Error('Invalid credencials');
+      }
+    });
   }
 
-  function upsert({ id, username, password }) {
-    const authData = { id, username, password };
+  async function upsert({ id, username, password }) {
+    const authData = { id, username, password: await bcrypt.hash(password, 5) };
 
     return store.upsert(TABLE, authData);
   }
