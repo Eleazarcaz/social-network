@@ -1,5 +1,6 @@
 const config = require("../config");
 const jwt = require("jsonwebtoken");
+const error = require("../utils/error");
 
 const secret = config.jwt.secret;
 
@@ -8,16 +9,16 @@ function sign(data) {
 }
 
 function verify(token) {
-  return jwt.sign(token, secret);
+  return jwt.verify(token, secret);
 }
 
 function getToken(auth) {
   if (!auth) {
-    throw new Error("Token not found");
+    throw error("Token not found", 400);
   }
 
   if (auth.indexOf("Bearer ") === -1) {
-    throw new Error("Token not found");
+    throw error("Token not found", 400);
   }
 
   let token = auth.replace("Bearer ", "");
@@ -38,7 +39,7 @@ const check = {
   own: function (req, owner) {
     const decoded = decodeHeader(req);
     if (decoded.id !== owner) {
-      throw new Error("You don't edit this");
+      throw error("You don't edit this", 401);
     }
   },
 };

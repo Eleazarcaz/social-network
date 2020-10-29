@@ -10,9 +10,7 @@ router.get("/", (req, res) => {
     .then((lista) => {
       response.success(req, res, lista, 200);
     })
-    .catch((err) => {
-      response.error(req, res, err, 500);
-    });
+    .catch(next);
 });
 
 router.get("/:id", (req, res) => {
@@ -20,19 +18,15 @@ router.get("/:id", (req, res) => {
     .then((user) => {
       response.success(req, res, user, 200);
     })
-    .catch((err) => {
-      response.error(req, res, err, 404);
-    });
+    .catch(next);
 });
 
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   Controller.add(req.body)
     .then((user) => {
       response.success(req, res, user, 200);
     })
-    .catch((err) => {
-      response.error(req, res, err, 500);
-    });
+    .catch(next);
 });
 
 router.put("/:id", secure("update"), (req, res) => {
@@ -40,9 +34,7 @@ router.put("/:id", secure("update"), (req, res) => {
     .then((user) => {
       response.success(req, res, user, 200);
     })
-    .catch((err) => {
-      response.error(req, res, err, 500);
-    });
+    .catch(next);
 });
 
 router.delete("/:id", (req, res) => {
@@ -50,9 +42,7 @@ router.delete("/:id", (req, res) => {
     .then((message) => {
       response.success(req, res, message, 200);
     })
-    .catch((err) => {
-      response.error(req, res, err, 404);
-    });
+    .catch(next);
 });
 
 module.exports = router;

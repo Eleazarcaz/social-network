@@ -1,10 +1,11 @@
-const bcrypt = require('bcrypt');
-const auth = require('../../../auth/index');
+const bcrypt = require("bcrypt");
+const auth = require("../../../auth/index");
+const error = require("../../../utils/error");
 
-const TABLE = 'auth';
+const TABLE = "auth";
 
-module.exports = function(includeStore) {
-  const store = includeStore || require('../../../store/dummy');
+module.exports = function (includeStore) {
+  const store = includeStore || require("../../../store/dummy");
 
   async function login({ username, password }) {
     const data = await store.query(TABLE, { username });
@@ -13,7 +14,7 @@ module.exports = function(includeStore) {
       if (isSame) {
         return auth.sign(data);
       } else {
-        throw new Error('Invalid credencials');
+        throw error("Invalid credencials", 400);
       }
     });
   }
