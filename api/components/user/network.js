@@ -1,11 +1,11 @@
-const express = require("express");
-const response = require("../../../network/response");
-const Controller = require("./index");
-const secure = require("./secure");
+const express = require('express');
+const response = require('../../../network/response');
+const Controller = require('./index');
+const secure = require('./secure');
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get('/', (req, res, next) => {
   Controller.list()
     .then((lista) => {
       response.success(req, res, lista, 200);
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
     .catch(next);
 });
 
-router.get("/:id", (req, res) => {
+router.get('/:id', (req, res, next) => {
   Controller.get(req.params.id)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -21,7 +21,7 @@ router.get("/:id", (req, res) => {
     .catch(next);
 });
 
-router.post("/", (req, res, next) => {
+router.post('/', (req, res, next) => {
   Controller.add(req.body)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -29,7 +29,7 @@ router.post("/", (req, res, next) => {
     .catch(next);
 });
 
-router.put("/:id", secure("update"), (req, res) => {
+router.put('/:id', secure('update'), (req, res, next) => {
   Controller.update(req.params.id, req.body)
     .then((user) => {
       response.success(req, res, user, 200);
@@ -37,7 +37,7 @@ router.put("/:id", secure("update"), (req, res) => {
     .catch(next);
 });
 
-router.delete("/:id", (req, res) => {
+router.delete('/:id', (req, res, next) => {
   Controller.remove(req.params.id)
     .then((message) => {
       response.success(req, res, message, 200);
