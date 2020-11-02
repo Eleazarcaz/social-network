@@ -1,11 +1,12 @@
-const config = require("../config");
-const jwt = require("jsonwebtoken");
-const error = require("../utils/error");
+const config = require('../config');
+const jwt = require('jsonwebtoken');
+const error = require('../utils/error');
 
 const secret = config.jwt.secret;
 
 function sign(data) {
-  return jwt.sign(data, secret);
+  const dataParse = JSON.parse(JSON.stringify(data));
+  return jwt.sign(dataParse, secret);
 }
 
 function verify(token) {
@@ -14,19 +15,19 @@ function verify(token) {
 
 function getToken(auth) {
   if (!auth) {
-    throw error("Token not found", 400);
+    throw error('Token not found', 400);
   }
 
-  if (auth.indexOf("Bearer ") === -1) {
-    throw error("Token not found", 400);
+  if (auth.indexOf('Bearer ') === -1) {
+    throw error('Token not found', 400);
   }
 
-  let token = auth.replace("Bearer ", "");
+  let token = auth.replace('Bearer ', '');
   return token;
 }
 
 function decodeHeader(req) {
-  const authorization = req.headers.authorization || "";
+  const authorization = req.headers.authorization || '';
   const token = getToken(authorization);
   const decoded = verify(token);
 
