@@ -43,6 +43,9 @@ const check = {
       throw error("You don't edit this", 401);
     }
   },
+  logged: function (req) {
+    const decoded = decodeHeader(req);
+  },
 };
 
 module.exports = {

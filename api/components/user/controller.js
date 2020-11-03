@@ -36,5 +36,9 @@ module.exports = function (includeStore) {
     return store.update(TABLE, id, { username, name });
   }
 
-  return { list, get, add, update, remove };
+  function follow(user_to, user_from) {
+    return store.insert(TABLE + '_follow', { user_from, user_to });
+  }
+
+  return { list, get, add, update, remove, follow };
 };
