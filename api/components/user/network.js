@@ -1,55 +1,71 @@
-const express = require('express');
-const response = require('../../../network/response');
-const Controller = require('./index');
-const secure = require('./secure');
+const express = require("express");
+const response = require("../../../network/response");
+const { list, get, add, update, follow} = require("./index");
+const validationHandler = require("../../../utils/middleware/validationHandler");
+const {createUserSchema} = require('../../../utils/schema/user')
+const secure = require("./secure");
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  Controller.list()
-    .then((lista) => {
-      response.success(req, res, lista, 200);
-    })
-    .catch(next);
-});
+router.get("/", getUsers);
+router.get("/:id", getUser);
+router.post("/", validationHandler(createUserSchema), addUser);
+router.put("/:id", secure("update"), updateUser);
+router.delete("/:id", secure("delete"), deleteUser);
+router.post("/follow/:id", secure("follow"), followUser);
 
-router.get('/:id', (req, res, next) => {
-  Controller.get(req.params.id)
-    .then((user) => {
-      response.success(req, res, user, 200);
-    })
-    .catch(next);
-});
+async function getUsers(req, res, next) {
+  try {
+    const users = await list();
+    response.success(req, res, users, 200);
+  } catch (error) {
+    next(error);
+  }
+}
 
-router.post('/', (req, res, next) => {
-  Controller.add(req.body)
-    .then((user) => {
-      response.success(req, res, user, 200);
-    })
-    .catch(next);
-});
+async function getUser(req, res, next) {
+  try {
+    const user = await get(req.params.id);
+    response.success(req, res, user, 200);
+  } catch (error) {
+    next(error);
+  }
+}
 
-router.put('/:id', secure('update'), (req, res, next) => {
-  Controller.update(req.params.id, req.body)
-    .then((user) => {
-      response.success(req, res, user, 200);
-    })
-    .catch(next);
-});
+async function addUser(req, res, next) {
+  try {
+    const user = await add(req.body);
+    response.success(req, res, user, 200);
+  } catch (error) {
+    next(error);
+  }
+}
 
-router.delete('/:id', (req, res, next) => {
-  Controller.remove(req.params.id)
-    .then((message) => {
-      response.success(req, res, message, 200);
-    })
-    .catch(next);
-});
-router.post('/follow/:id', secure('follow'), (req, res, next) => {
-  Controller.follow(req.params.id, req.user.id)
-    .then((message) => {
-      response.success(req, res, message, 200);
-    })
-    .catch(next);
-});
+async function updateUser(req, res, next) {
+  try {
+    const user = await update(req.params.id, req.body);
+    response.success(req, res, user, 200);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deleteUser(req, res, next) {
+  try {
+    const message = remove(req.params.id);
+    response.success(req, res, message, 200);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function followUser(req, res, next) {
+  try {
+    const message = await follow(req.params.id, req.user.id);
+    response.success(req, res, message, 200);
+  } catch (error) {
+    next(error);
+  }
+}
 
 module.exports = router;

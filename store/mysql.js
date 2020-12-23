@@ -33,7 +33,7 @@ function handleCon() {
 
 handleCon();
 
-function list(table, id) {
+function list(table) {
   return new Promise((resolve, reject) => {
     connection.query(`SELECT * FROM ${table}`, (err, results) => {
       if (err) {
@@ -52,7 +52,7 @@ function get(table, id) {
         if (err) {
           reject(err);
         }
-        resolve(data);
+        resolve(results);
       },
     );
   });

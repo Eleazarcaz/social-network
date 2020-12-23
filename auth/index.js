@@ -39,7 +39,7 @@ function decodeHeader(req) {
 const check = {
   own: function (req, owner) {
     const decoded = decodeHeader(req);
-    if (decoded.id !== owner) {
+    if (decoded.id.toString() !== owner) {
       throw error("You don't edit this", 401);
     }
   },

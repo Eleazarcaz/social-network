@@ -1,14 +1,20 @@
-module.exports = {
+if(!process.env.PRODUCTION){
+  require('dotenv').config();
+}
+
+const config = {
   api: {
-    port: process.env.API_PORT || 3000,
+    port: process.env.PORT,
   },
   jwt: {
-    secret: process.env.JWT_SECRET || 'secret',
+    secret: process.env.JWT_SECRET,
   },
   mysql: {
-    host: process.env.MYSQL_HOST || 'localhost',
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASS || '1234',
-    database: process.env.MYSQL_DATABASE || 'social_network',
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASS,
+    database: process.env.MYSQL_DATABASE,
   },
 };
+
+module.exports = config;
