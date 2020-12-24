@@ -1,20 +1,19 @@
-const bcrypt = require("bcrypt");
-const auth = require("../../../auth/index");
-const error = require("../../../utils/error");
+const bcrypt = require('bcrypt');
+const auth = require('../../../auth/index');
 
-const TABLE = "auth";
+const TABLE = 'auth';
 
 module.exports = function (includeStore) {
-  const store = includeStore || require("../../../store/dummy");
+  const store = includeStore || require('../../../store/dummy');
 
   async function login({ email, password }) {
     const data = await store.query(TABLE, { email });
 
     return bcrypt.compare(password, data.password).then((isSame) => {
       if (isSame) {
-        return auth.sign({id: data.user_id, email: data.email});
+        return auth.sign({ id: data.user_id, email: data.email });
       } else {
-        throw error("Invalid credencials", 400);
+        throw new Error('Invalid credencials', 400);
       }
     });
   }

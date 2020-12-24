@@ -1,24 +1,34 @@
+const boom = require('@hapi/boom');
+const debug = require('debug')('app:server');
+
+function withErrorStack(err, stack) {
+  if (!process.env.NODE_ENV === 'production') {
+    next({ ...err, stack });
+  }
+  return err;
+}
+
 function logError(err, req, res, next) {
-  console.log(err);
+  debug(err);
   next(err);
 }
 
-function clientErrorHandler(err, req, res, next) {
-  if (req.xhr) {
-    res.status(500).send({ error: "Something failed" });
-  } else {
-    next(error);
+function wrapError(err, req, res, next) {
+  if (!err.isBoom) {
+    next(boom.badImplementation(err));
   }
+  next(err);
 }
 
 function errorHandler(err, req, res, next) {
-  res.status(500);
-  res.send("paso otra cosa");
+  const {
+    output: { statusCode, payload },
+  } = err;
+  res.status(statusCode).json(withErrorStack(payload, err.stack));
 }
 
 module.exports = {
-logError,
-  clientErrorHandler,
+  logError,
+  wrapError,
   errorHandler,
-
-}
+};

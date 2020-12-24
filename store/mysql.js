@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const debug = require('debug')('app:data_base');
 const config = require('../config');
 
 const dbconfig = {
@@ -14,19 +15,19 @@ function handleCon() {
   connection = mysql.createConnection(dbconfig);
   connection.connect((err) => {
     if (err) {
-      console.log('[DB error]', err);
+      debug(`[DB error], ${err}`);
       setTimeout(handleCon, 2000);
     } else {
-      console.log('DB Connected');
+      debug(`[DB Connected]`);
     }
   });
 
   connection.on('error', (err) => {
-    console.log('[DB error]', err);
+    debug(`[DB error], ${err}`);
     if (err.code === 'PROTOCOL_CONNECTION_LOST') {
       handleCon();
     } else {
-      throw err;
+      throw new Error(err);
     }
   });
 }

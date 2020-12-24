@@ -1,8 +1,8 @@
 const express = require("express");
 const response = require("../../../network/response");
-const { list, get, add, update, follow} = require("./index");
+const { list, get, add, update, follow } = require("./index");
 const validationHandler = require("../../../utils/middleware/validationHandler");
-const {createUserSchema} = require('../../../utils/schema/user')
+const { createUserSchema } = require("../../../utils/schema/user");
 const secure = require("./secure");
 
 const router = express.Router();
