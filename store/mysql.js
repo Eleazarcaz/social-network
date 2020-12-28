@@ -45,15 +45,15 @@ function list(table) {
   });
 }
 
-function get(table, id) {
+function get(table, id, email) {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM ${table} WHERE id = ${id}`,
+      `SELECT * FROM ${table} WHERE ${id ? 'id' : 'email'}=${id || email}`,
       (err, results) => {
         if (err) {
           reject(err);
         }
-        resolve(results);
+        resolve(results[0]);
       },
     );
   });

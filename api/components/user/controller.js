@@ -1,29 +1,25 @@
-const auth = require("../auth/index");
-
-const TABLE = "users";
+const bcrypt = require('bcrypt');
+const TABLE = 'users';
 
 module.exports = function (includeStore) {
-  const store = includeStore || require("../../../store/dummy");
+  const store = includeStore || require('../../../store/dummy');
 
   function list() {
     return store.list(TABLE);
   }
 
-  function get(id) {
-    return store.get(TABLE, id);
+  function get(id, email) {
+    const emailToString = `'${email}'`;
+    return store.get(TABLE, id, emailToString);
   }
 
   async function add({ nickname, password, email }) {
-    const userToAuth = {
+    const passwordEncrypted = await bcrypt.hash(password, 5);
+    return await store.insert(TABLE, {
       nickname,
       email,
-      password,
-    };
-
-    const user = await store.insert(TABLE, {nickname, email});
-    await auth.insert({...userToAuth, id: user.insertId});
-
-    return user;
+      password: passwordEncrypted,
+    });
   }
 
   function remove(id) {
@@ -34,9 +30,5 @@ module.exports = function (includeStore) {
     return store.update(TABLE, id, { email, nickname });
   }
 
-  function follow(user_to, user_from) {
-    return store.insert(TABLE + "_follow", { user_from, user_to });
-  }
-
-  return { list, get, add, update, remove, follow };
+  return { list, get, add, update, remove };
 };
